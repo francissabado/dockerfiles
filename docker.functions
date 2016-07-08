@@ -716,7 +716,7 @@ spotify(){
 		--group-add audio \
 		--group-add video \
 		--name spotify \
-		${DOCKER_REPO_PREFIX}/spotify
+		${DOCKER_REPO_PREFIX}/spotify bash
 }
 ssh2john(){
 	local file=$(realpath $1)
@@ -952,6 +952,91 @@ yubico_piv_tool(){
 		${DOCKER_REPO_PREFIX}/yubico-piv-tool bash
 }
 alias yubico-piv-tool="yubico_piv_tool"
+registry_run(){
+	del_stopped registry
+
+	docker run -d \
+		-p 5000:5000 \
+		--restart=always \
+		-v /D/DockerRegistry/data:/var/lib/registry \
+		--name registry \
+		registry:2.4.1 bash
+
+}
+eclipse_orion(){
+	del_stopped eclipse_orion
+
+	docker run -it \
+		-v $HOME/eclipse:/code/eclipse \
+		-v /tmp/.X11-unix:/tmp/.X11-unix \
+		-e DISPLAY=$DISPLAY \
+		--name eclipse_orion \
+		fabric8-eclipse-orion
+}
+function eclipse_docker(){
+	del_stopped 
+
+	docker run -ti --rm \
+		   -e DISPLAY=$DISPLAY \
+		   -v /tmp/.X11-unix:/tmp/.X11-unix \
+		   -v `pwd`:/home/developer/workspace \
+		--name fgrehm_eclipse \
+		fgrehm/eclipse:v4.4.1
+}
+
+function eclipse_tiokksar(){
+	del_stopped eclipse_tiokksar
+
+	docker run -ti --rm \
+		   -e DISPLAY=$DISPLAY \
+		   -v /tmp/.X11-unix:/tmp/.X11-unix \
+		   -v `pwd`:/home/dev/workspace \
+		--name eclipse_tiokksar \
+		tiokksar/eclipse
+}
+
+function intellij_dlsniper(){
+	local GOPATH=~/go
+
+#--privileged=true \
+#		   -v ${HOME}/.IdeaIC2016.1_docker:/home/developer/.IdeaIC2016.1 \
+
+	docker run -ti --rm \
+		   --net="host" \
+		   -e DISPLAY=${DISPLAY} \
+		   --privileged=true \
+		   -v /tmp/.X11-unix:/tmp/.X11-unix \
+		   -v ${GOPATH}:/home/developer/go \
+		   dlsniper/docker-intellij bash
+}
+
+function intellij_fs8080(){
+	local GOPATH=~/go
+
+#--privileged=true \
+#		   -v ${HOME}/.IdeaIC2016.1_docker:/home/developer/.IdeaIC2016.1 \
+
+	docker run -ti --rm \
+		   --net="host" \
+		   -e DISPLAY=${DISPLAY} \
+		   --privileged=true \
+		   -v /tmp/.X11-unix:/tmp/.X11-unix \
+		   -v ${HOME}/.IdeaIC2016.1_docker:/home/developer/.IdeaIC2016.1 \
+		   -v ${GOPATH}:/home/developer/go \
+		   fs8080/docker-intellij
+}
+
+function intellij_snellm(){
+	del_stopped intellij_snellm
+	docker run -d \
+		-e DISPLAY=$DISPLAY \
+		-v /tmp/.X11-unix:/tmp/.X11-unix \
+		-v $HOME:/home/dev \
+		--name intellij_snellm \
+		 snellm/intellij
+
+}
+
 
 
 ###

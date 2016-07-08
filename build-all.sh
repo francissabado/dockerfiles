@@ -1,14 +1,17 @@
 #!/bin/bash
 set -e
 
-build_and_push(){
+export DOCKER_PREFIX=fs8080
+
+
+docker_build_and_push(){
 	base=$1
 	suite=$2
 	build_dir=$3
 
 	(
 	set -x
-	docker build --rm --force-rm -t r.j3ss.co/${base}:${suite} ${build_dir}
+	docker build --rm --force-rm -t ${DOCKER_PREFIX}/${base}:${suite} ${build_dir}
 	)
 
 	echo "                       ---                                   "
@@ -19,7 +22,7 @@ build_and_push(){
 	# absolutely no reason
 	n=0
 	until [ $n -ge 5 ]; do
-		docker push --disable-content-trust=false r.j3ss.co/${base}:${suite} && break
+		docker push --disable-content-trust=false ${DOCKER_PREFIX}/${base}:${suite} && break
 		echo "Try #$n failed... sleeping for 15 seconds"
 		n=$[$n+1]
 		sleep 15
@@ -27,9 +30,25 @@ build_and_push(){
 
 	# also push the tag latest for "stable" tags
 	if [[ "$suite" == "stable" ]]; then
-		docker tag r.j3ss.co/${base}:${suite} r.j3ss.co/${base}:latest
-		docker push --disable-content-trust=false r.j3ss.co/${base}:latest
+		docker tag ${DOCKER_PREFIX}/${base}:${suite} ${DOCKER_PREFIX}/${base}:latest
+		docker push --disable-content-trust=false ${DOCKER_PREFIX}/${base}:latest
 	fi
+
+}
+
+docker_build(){
+	base=$1
+	suite=$2
+	build_dir=$3
+
+	(
+	set -x
+	docker build --rm --force-rm -t ${DOCKER_PREFIX}/${base}:${suite} ${build_dir}
+	)
+
+	echo "                       ---                                   "
+	echo "Successfully built ${base}:${suite} with context ${build_dir}"
+	echo "                       ---                                   "
 
 }
 
@@ -56,7 +75,8 @@ main(){
 		fi
 
 		{
-			build_and_push "${base}" "${suite}" "${build_dir}"
+			#docker_build_and_push "${base}" "${suite}" "${build_dir}"
+			docker_build "${base}" "${suite}" "${build_dir}"
 		} || {
 			# add to errors
 			ERRORS+=("${base}:${suite}")

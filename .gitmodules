@@ -1,0 +1,9 @@
+[submodule "fabric8-eclipse-orion"]
+	path = fabric8-eclipse-orion
+	url = https://github.com/fabric8io/fabric8-eclipse-orion.git
+[submodule "docker-eclipse"]
+	path = docker-eclipse
+	url = https://github.com/fgrehm/docker-eclipse.git
+[submodule "docker-intellij"]
+	path = docker-intellij
+	url = https://github.com/dlsniper/docker-intellij.git
