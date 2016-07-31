@@ -7,3 +7,6 @@
 [submodule "docker-intellij"]
 	path = docker-intellij
 	url = https://github.com/dlsniper/docker-intellij.git
+[submodule "docker-asciidoctor"]
+	path = docker-asciidoctor
+	url = https://github.com/asciidoctor/docker-asciidoctor.git
